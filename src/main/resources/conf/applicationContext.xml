@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mybatis="http://mybatis.org/schema/mybatis-spring"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx" xmlns:task="http://www.springframework.org/schema/task"
+       xsi:schemaLocation="
+      http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+      http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+      http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+      http://www.springframework.org/schema/task
+      http://www.springframework.org/schema/task/spring-task-3.0.xsd
+      http://mybatis.org/schema/mybatis-spring
+      http://mybatis.org/schema/mybatis-spring.xsd">
+
+    <!-- 事务（注解 ）-->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true"/>
+
+    <bean id="mafkaProducerConfig" class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="locations">
+            <list><value>classpath:conf/producer.properties</value></list>
+        </property>
+    </bean>
+
+    <!-- 定义Aspect -->
+    <bean id="guardian" class="com.crazyfish.kamal.test.testaop.Guardian" />
+    <!--定义Bean-->
+    <bean id="monkey" class="com.crazyfish.kamal.test.testaop.Monkey" />
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:conf/mybatis-config.xml" />
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+
+    <!-- 使用annotation定义事务 -->
+    <tx:annotation-driven order="2" transaction-manager="transactionManager" proxy-target-class="true" />
+    <!--DAO层使用mybatis注解方式，接口无法创建实例，所以@Resource注入的时候无法注入，导致失败，该方法会扫描该文件吓得DAO接口，生成实例-->
+    <mybatis:scan base-package="com.crazyfish.kamal.dao"/>
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
+        <!-- 基本属性 url、user、password -->
+        <property name="url" value="jdbc:mysql://10.4.237.137:3306/pro_connect?useUnicode=true&amp;connectTimeout=6000&amp;socketTimeout=12000&amp;characterEncoding=UTF-8" />
+        <property name="username" value="test" />
+        <property name="password" value="test" />
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+
+        <!-- 配置初始化大小、最小、最大 -->
+        <property name="initialSize" value="4" />
+        <property name="minIdle" value="4" />
+        <property name="maxActive" value="16" />
+
+        <!-- 配置获取连接等待超时的时间 -->
+        <property name="maxWait" value="3000" />
+
+        <!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+        <property name="timeBetweenEvictionRunsMillis" value="60000" />
+
+        <!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="300000" />
+
+        <property name="testWhileIdle" value="true" />
+        <property name="testOnBorrow" value="false" />
+        <property name="validationQuery" value="SELECT 1" />
+        <property name="connectionInitSqls" value="SET NAMES utf8mb4" />
+    </bean>
+
+    <bean id="helloService" class="com.crazyfish.kamal.test.TestThrift.DynamicClientProxyFactory" factory-method="createIface">
+        <constructor-arg>
+            <value>com.crazyfish.kamal.controller.IHelloWorldService$Iface</value>
+        </constructor-arg>
+        <constructor-arg>
+            <value>127.0.0.1:8172</value>
+        </constructor-arg>
+    </bean>
+
+    <!-- 启动AspectJ支持 -->
+    <aop:aspectj-autoproxy />
+
+    <import resource="classpath:conf/app-task.xml"/>
+    <task:annotation-driven executor="myExecutor" scheduler="myScheduler"/>
+    <task:executor id="myExecutor" pool-size="5"/>
+    <task:scheduler id="myScheduler" pool-size="10"/>
+</beans>

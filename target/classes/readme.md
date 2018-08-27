@@ -1,0 +1,1 @@
+clean jetty:run -DskipTests
