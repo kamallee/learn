@@ -18,7 +18,7 @@ public class TestSpringTask implements InitializingBean{//初始化bean时执行
 
     public void afterPropertiesSet() throws Exception {
         final AtomicInteger count = new AtomicInteger();
-        for(int i = 0;i < 100;i ++) {
+        for(int i = 0;i < 2;i ++) {
             executor.execute(new Runnable() {
                 public void run() {
                     System.out.println("xx:" + count.incrementAndGet());

@@ -21,9 +21,9 @@
     </context-param>
     <servlet-mapping>
         <servlet-name>spring</servlet-name>
-        <url-pattern>/*</url-pattern>
+        <url-pattern>*.do</url-pattern>
     </servlet-mapping>
-    <!--spring 配置-->
+    <!--spring 配置 配置ContextLoaderListener表示，该工程要以spring的方式启动-->
     <listener>
         <listener-class>
             org.springframework.web.context.ContextLoaderListener

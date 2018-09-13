@@ -42,9 +42,9 @@
     <mybatis:scan base-package="com.crazyfish.kamal.dao"/>
     <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
         <!-- 基本属性 url、user、password -->
-        <property name="url" value="jdbc:mysql://10.4.237.137:3306/pro_connect?useUnicode=true&amp;connectTimeout=6000&amp;socketTimeout=12000&amp;characterEncoding=UTF-8" />
-        <property name="username" value="test" />
-        <property name="password" value="test" />
+        <property name="url" value="jdbc:mysql://120.25.60.73:3300/sc2db?useUnicode=true&amp;connectTimeout=6000&amp;socketTimeout=12000&amp;characterEncoding=UTF-8" />
+        <property name="username" value="sc1scf" />
+        <property name="password" value="ffjwoefjweAfe*9209~" />
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
 
         <!-- 配置初始化大小、最小、最大 -->

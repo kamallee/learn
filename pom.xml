@@ -206,18 +206,17 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.mortbay.jetty</groupId>
+                <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
-                <version>8.1.15.v20140411</version>
+                <version>9.4.2.v20170220</version>
                 <configuration>
-                    <connectors>
-                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
-                            <port>8888</port>  <!--在此处修改端口号-->
-                            <maxIdleTime>60000</maxIdleTime>
-                        </connector>
-                    </connectors>
-                    <stopKey/>
-                    <stopPort/>
+                    <scanIntervalSeconds>
+                        1
+                    </scanIntervalSeconds>
+                    <httpConnector>
+                        <port>8888</port>
+                        <idleTimeout>60000</idleTimeout>
+                    </httpConnector>
                 </configuration>
             </plugin>
             <plugin>

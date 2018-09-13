@@ -12,6 +12,10 @@
     <context:property-placeholder location="classpath:conf/redis.properties"/>
     <!--参数注解自动转换，比如String转Date-->
     <mvc:annotation-driven/>
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/test/" />
+        <property name="suffix" value=".jsp" />
+    </bean>
     <!--配置redis 属性-->
     <bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">
         <property name="maxActive" value="${redis.maxActive}"/>
